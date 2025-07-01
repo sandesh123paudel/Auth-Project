@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
-const userSchema = User(
+const userSchema = mongoose.Schema(
   {
     email: {
       type: String,
       required: [true, "Email is Required"],
       trim: true,
       unique: [true, "User has already been registered with this email"],
-      minLength: [5, "Email must have 5 characters"],
+      minLength: [6, "Email must have 5 characters"],
       lowercase: true,
     },
     password: {
