@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=.env index.js",
-    "dev": "node --watch --trace-warnings --env-file=.env index.js"
+    "start": "node --env-file=.env index.js ",
+    "dev": "node --watch --trace-warnings --env-file=.env index.js",
+    "start1": "nodemon --env-file=.env index.js index.js"
   },
   "author": "sandeshpaudel",
   "license": "ISC",
@@ -19,5 +20,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.1",
     "nodemailer": "^7.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
