@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { signUpSchema, signInSchema } = require("../middlewares/validator");
 const User = require("../models/usersModel");
-const { doHash, doHashValidation } = require("../utils/hashing");
+const { doHash, doHashValidation, hmacProcess } = require("../utils/hashing");
+const transport = require("../middlewares/sendMail");
 
 exports.signUp = async (req, res) => {
   const { email, password } = req.body;
@@ -67,7 +68,10 @@ exports.signIn = async (req, res) => {
         email: existingUser.email,
         verified: existingUser.verified,
       },
-      process.env.TOKEN_SECRET
+      process.env.TOKEN_SECRET,
+      {
+        expiresIn: "8h",
+      }
     );
 
     res
@@ -81,6 +85,59 @@ exports.signIn = async (req, res) => {
         token,
         message: "Logged In Successfully",
       });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.signOut = async (req, res) => {
+  res.clearCookie("Authorization").status(200).json({
+    success: true,
+    message: "Logged Out Successfully",
+  });
+};
+
+exports.sendVerificationCode = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User doesn't exists. Register First",
+      });
+    }
+    if (existingUser.verified) {
+      return res.status(400).json({
+        success: false,
+        message: "User is already verified",
+      });
+    }
+    const codeValue = Math.floor(Math.random() * 1000000).toString();
+    let info = await transport.sendMail({
+      from: process.env.NODE_CODE_SENDING_EMAIL_ADDRESS,
+      to: existingUser.email,
+      subject: "Verification Code",
+      html: "<h1>" + codeValue + "</h1>",
+    });
+
+    if (info.accepted[0] === existingUser.email) {
+      const hashedCodeValue = hmacProcess(
+        codeValue,
+        process.env.HMAC_VERIFICATION_CODE_SECRET
+      );
+      existingUser.verificationCode = hashedCodeValue;
+      existingUser.verificationCodeValidation = Date.now();
+      await existingUser.save();
+      return res.status(200).json({
+        success: true,
+        message: "Code Sent",
+      });
+    }
+    res.status(400).json({
+      success: true,
+      message: "Code Sent Failed",
+    });
   } catch (error) {
     console.log(error);
   }
