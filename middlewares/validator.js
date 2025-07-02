@@ -50,3 +50,20 @@ exports.acceptCodeSchema = Joi.object({
     }),
   providedCode: Joi.number().required(), // 6-digit number
 });
+
+exports.changePasswordSchema = Joi.object({
+  newPassword: Joi.string()
+    .required()
+    .pattern(
+      new RegExp(
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+      )
+    ),
+  oldPassword: Joi.string()
+    .required()
+    .pattern(
+      new RegExp(
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
+      )
+    ),
+});
