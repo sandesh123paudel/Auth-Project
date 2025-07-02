@@ -18,4 +18,15 @@ authRouter.patch(
 );
 authRouter.patch("/change-password", identifier, authController.changePassword);
 
+authRouter.patch(
+  "/send-forgot-password-code",
+
+  authController.sendForgotPasswordCode
+);
+authRouter.patch(
+  "/verify-forgot-password-code",
+
+  authController.verifyForgotPasswordCode
+);
+
 module.exports = authRouter;
