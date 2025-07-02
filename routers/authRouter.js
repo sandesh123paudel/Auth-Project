@@ -9,5 +9,8 @@ authRouter.patch(
   "/send-verification-code",
   authController.sendVerificationCode
 );
-
+authRouter.patch(
+  "/verify-verification-code",
+  authController.verifyVerificationCode
+);
 module.exports = authRouter;
