@@ -7,6 +7,6 @@ postRouter.get("/all-posts", postContoller.getPosts);
 postRouter.get("/single-post", postContoller.singlePost);
 postRouter.post("/create-post", identifier, postContoller.createPost);
 postRouter.put("/update-post", identifier, postContoller.updatePost);
-// postRouter.delete("/delete-post", postContoller.signUp);
+postRouter.delete("/delete-post", identifier, postContoller.deletePost);
 
 module.exports = postRouter;

@@ -115,3 +115,28 @@ exports.updatePost = async (req, res) => {
     console.log(error);
   }
 };
+
+exports.deletePost = async (req, res) => {
+  const { _id } = req.query;
+
+  const { userId } = req.user;
+
+  try {
+    const existingPost = await Post.findOne({ _id });
+    if (!existingPost) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Post Already Unavailable" });
+    }
+
+    if (existingPost.userId.toString() !== userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    await Post.deleteOne({ _id });
+
+    res.status(200).json({ success: true, message: "Post Deleted " });
+  } catch (error) {
+    console.log(error);
+  }
+};
