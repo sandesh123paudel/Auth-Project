@@ -78,7 +78,7 @@ exports.acceptFPCodeSchema = Joi.object({
         allow: ["com", "net"],
       },
     }),
-    providedCode: Joi.number().required(),
+  providedCode: Joi.number().required(),
   newPassword: Joi.string()
     .required()
     .pattern(
@@ -86,4 +86,11 @@ exports.acceptFPCodeSchema = Joi.object({
         "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
       )
     ),
+});
+
+exports.createPostSchema = Joi.object({
+  title: Joi.string().min(6).max(60).required(),
+
+  description: Joi.string().required().min(6).max(600),
+  userId: Joi.string().required(),
 });
